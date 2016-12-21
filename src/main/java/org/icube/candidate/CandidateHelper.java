@@ -27,14 +27,14 @@ public class CandidateHelper {
 		//call the procedure from db to get the candidate details
 		
 		try (CallableStatement cstmt = dch.masterDS.getConnection()
-				.prepareCall("{call getCandidateListByFilter(?,?,?,?}")) {
+				.prepareCall("{call getCandidateListByFilter(?,?,?,?)}")) {
 			
 			//send the specific id's as input to the procedure
 			
-			cstmt.setInt("region_id", regionId);
-			cstmt.setInt("circle_id", circleId);
-			cstmt.setInt("city_id", cityId);
-			cstmt.setInt("role_id", roleId);
+			cstmt.setInt("regionId", regionId);
+			cstmt.setInt("circleId", circleId);
+			cstmt.setInt("cityId", cityId);
+			cstmt.setInt("roleId", roleId);
 			try (ResultSet rs = cstmt.executeQuery()) {
 				while (rs.next()) {
 					
@@ -50,7 +50,7 @@ public class CandidateHelper {
 					"Exceptiopn while retrieving the candidate details :", e);
 		}
 
-		return new ArrayList<Candidate>();
+		return candidateList;
 	}
 
 	/**
@@ -64,8 +64,8 @@ public class CandidateHelper {
 		c.setName(rs.getString("cand_name"));
 		c.setEmailId(rs.getString("email_id"));
 		c.setMobileNumber(rs.getString("mob_no"));
-		c.setRole(rs.getString("role_id"));
-		c.setCity(rs.getString("city_id"));
+		c.setRole(rs.getString("role"));
+		c.setCity(rs.getString("city"));
 		return c;
 	}
 }

@@ -17,7 +17,7 @@ public class MasterListHelper {
 	public Map<Integer, String> getRegionMasterList() {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
 		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug(
-				"HashMap created");
+				"HashMap for region created");
 		Map<Integer, String> regionMasterList = new HashMap<>();
 		
 		//call the procedure to get the region master list
@@ -43,7 +43,7 @@ public class MasterListHelper {
 	public Map<Integer, String> getCircleMasterList() {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
 		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug(
-				"HashMap created");
+				"HashMap for circle created");
 		Map<Integer, String> circleMasterList = new HashMap<>();
 		//call the procedure to get the circle master list
 		try (CallableStatement cstmt = dch.masterDS.getConnection()
@@ -58,6 +58,7 @@ public class MasterListHelper {
 			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error(
 					"Exception in retrieving the circle master list :", e);
 		}
+		circleMasterList.put(0, "ALL");
 		return circleMasterList;
 	}
 
@@ -68,7 +69,7 @@ public class MasterListHelper {
 	public Map<Integer, String> getCityMasterList() {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
 		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug(
-				"HashMap created");
+				"HashMap for city created");
 		Map<Integer, String> cityMasterList = new HashMap<>();
 		//call the procedure to get the city master list
 		try (CallableStatement cstmt = dch.masterDS.getConnection()
@@ -82,6 +83,7 @@ public class MasterListHelper {
 			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error(
 					"Exception in retrieving the city master list :", e);
 		}
+		cityMasterList.put(0, "ALL");
 		return cityMasterList;
 	}
 
@@ -92,7 +94,7 @@ public class MasterListHelper {
 	public Map<Integer, String> getRoleMasterList() {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
 		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug(
-				"HashMap created");
+				"HashMap for role created");
 		Map<Integer, String> roleMasterList = new HashMap<>();
 		//call the procedure to get the role master list
 		try (CallableStatement cstmt = dch.masterDS.getConnection()
@@ -106,6 +108,7 @@ public class MasterListHelper {
 			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error(
 					"Exception in retrieving the role master list :", e);
 		}
+		roleMasterList.put(0, "ALL");
 		return roleMasterList;
 	}
 

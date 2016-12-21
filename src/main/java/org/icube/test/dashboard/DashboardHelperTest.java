@@ -1,11 +1,12 @@
 package org.icube.test.dashboard;
 
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.icube.dashboard.DashboardHelper;
-import org.icube.dashboard.LocationData;
+import org.icube.role.Role;
 import org.junit.Test;
 
 public class DashboardHelperTest {
@@ -16,12 +17,12 @@ public class DashboardHelperTest {
 		Map<Date, Integer> candidateMap = dh.getCandidatesByMonth();
 		for (Date d : candidateMap.keySet()){
 			
-			System.out.println(candidateMap.get(d));
+			System.out.println(d + ":" + candidateMap.get(d));
 			
 		}
 	}
 	
-	@Test
+	/*@Test
 	public void testGetLocationCount(){
 		DashboardHelper dh = new DashboardHelper();
 		List<LocationData> locationList = dh.getLocationCount(0, 0, 0);
@@ -32,15 +33,15 @@ public class DashboardHelperTest {
 			System.out.println("count :" + ld.getCandidateCount());
 			
 		}
-	}
+	}*/
 	
 	@Test
 	public void testGetRoleCount(){
 		DashboardHelper dh = new DashboardHelper();
-		Map<Integer, Integer> roleCountMap = dh.getRoleCount(0, 0);
-		for (Integer i : roleCountMap.keySet()){
+		List<Role> roleCountList = dh.getRoleCount(1, 0);
+		for (Role r : roleCountList){
 			
-			System.out.println("Count for "+ i + "is" + roleCountMap.get(i));
+			System.out.println(r.getRoleId() + " - " + r.getRole() + " - " + r.getCandidateCount());
 			
 		}
 	}

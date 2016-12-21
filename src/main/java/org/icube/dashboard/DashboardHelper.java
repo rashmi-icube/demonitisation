@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.icube.axis.ObjectFactory;
 import org.icube.helper.DatabaseConnectionHelper;
+import org.icube.role.Role;
 
 public class DashboardHelper {
 
@@ -21,15 +22,17 @@ public class DashboardHelper {
 	public Map<Date, Integer> getCandidatesByMonth() {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
 		org.apache.log4j.Logger.getLogger(DashboardHelper.class).debug(
-				"HashMap created");
+				"HashMap for candidates per month created");
 		Map<Date, Integer> candidateCountMap = new HashMap<>();
 		try (CallableStatement cstmt = dch.masterDS.getConnection()
 				.prepareCall("{call getCandidatesByMonth()}");
 				ResultSet rs = cstmt.executeQuery()) {
 			//fill the candidate count map 
-			
+
 			while (rs.next()) {
-				candidateCountMap.put(rs.getDate("Date"), rs.getInt("count"));
+				
+				candidateCountMap.put(rs.getDate("submission_month"), rs.getInt("candidate_count"));
+				
 			}
 
 		} catch (SQLException e) {
@@ -99,13 +102,13 @@ public class DashboardHelper {
 	 * @param circleId - circle id : 0 for ALL
 	 * @return Map of role id and corresponding count
 	 */
-	public Map<Integer, Integer> getRoleCount(int regionId, int circleId) {
+	public List<Role> getRoleCount(int regionId, int circleId) {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
 		org.apache.log4j.Logger.getLogger(DashboardHelper.class).debug(
-				"HashMap created");
-		Map<Integer, Integer> roleCountMap = new HashMap<>();
+				"HashMap for role count created");
+		List<Role> roleCountList = new ArrayList<>();
 		try (CallableStatement cstmt = dch.masterDS.getConnection()
-				.prepareCall("{call getRoleCount(?,?}")) {
+				.prepareCall("{call getRoleCount(?,?)}")) {
 			
 			//send regionId and circleId as input to the procedure
 			
@@ -113,9 +116,11 @@ public class DashboardHelper {
 			cstmt.setInt("circleId", circleId);
 			try (ResultSet rs = cstmt.executeQuery()) {
 				while (rs.next()) {
-					//fill the roleCountMap
+					//fill the role object with role id,role and candidate count
+					Role r = setRoleDetails(rs);
 					
-					roleCountMap.put(rs.getInt("roleId"), rs.getInt("count"));
+					//fill the roleCountList
+					roleCountList.add(r);
 				}
 			}
 
@@ -124,6 +129,20 @@ public class DashboardHelper {
 					"Exeption in retrieving the role count details :", e);
 		}
 
-		return roleCountMap;
+		return roleCountList;
+	}
+	
+	/**
+	 * Fills the Role object with 
+	 * @param rs - resultset
+	 * @return Role object
+	 * @throws SQLException - If unable to retrieve data from the resultset
+	 */ 
+	private Role setRoleDetails(ResultSet rs) throws SQLException {
+		Role r = new Role();
+		r.setRole(rs.getString("role"));
+		r.setRoleId(rs.getInt("role_id"));
+		r.setCandidateCount(rs.getInt("candidate_count"));
+		return r;
 	}
 }
