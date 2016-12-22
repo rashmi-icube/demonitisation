@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.icube.dashboard.DashboardHelper;
+import org.icube.dashboard.LocationData;
 import org.icube.role.Role;
 import org.junit.Test;
 
@@ -22,10 +23,10 @@ public class DashboardHelperTest {
 		}
 	}
 	
-	/*@Test
+	@Test
 	public void testGetLocationCount(){
 		DashboardHelper dh = new DashboardHelper();
-		List<LocationData> locationList = dh.getLocationCount(0, 0, 0);
+		List<LocationData> locationList = dh.getLocationCount();
 		for (LocationData ld : locationList){
 			System.out.println("region id :" + ld.getRegionId());
 			System.out.println("circle id :" + ld.getCircleId());
@@ -33,7 +34,7 @@ public class DashboardHelperTest {
 			System.out.println("count :" + ld.getCandidateCount());
 			
 		}
-	}*/
+	}
 	
 	@Test
 	public void testGetRoleCount(){

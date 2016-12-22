@@ -21,25 +21,20 @@ public class DashboardHelper {
 	 */
 	public Map<Date, Integer> getCandidatesByMonth() {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
-		org.apache.log4j.Logger.getLogger(DashboardHelper.class).debug(
-				"HashMap for candidates per month created");
+		org.apache.log4j.Logger.getLogger(DashboardHelper.class).debug("HashMap for candidates per month created");
 		Map<Date, Integer> candidateCountMap = new HashMap<>();
-		try (CallableStatement cstmt = dch.masterDS.getConnection()
-				.prepareCall("{call getCandidatesByMonth()}");
-				ResultSet rs = cstmt.executeQuery()) {
-			//fill the candidate count map 
+		try (CallableStatement cstmt = dch.masterDS.getConnection().prepareCall("{call getCandidatesByMonth()}"); ResultSet rs = cstmt.executeQuery()) {
+			// fill the candidate count map
 
 			while (rs.next()) {
-				
+
 				candidateCountMap.put(rs.getDate("submission_month"), rs.getInt("candidate_count"));
-				
+
 			}
 
 		} catch (SQLException e) {
-			org.apache.log4j.Logger
-					.getLogger(DashboardHelper.class)
-					.error("Exception while retrieving the number of candidater per month details :",
-							e);
+			org.apache.log4j.Logger.getLogger(DashboardHelper.class).error("Exception while retrieving the number of candidater per month details :",
+					e);
 		}
 		return candidateCountMap;
 	}
@@ -51,32 +46,30 @@ public class DashboardHelper {
 	 * @param cityId - city id : 0 for ALL
 	 * @return List of Location objects 
 	 */
-	public List<LocationData> getLocationCount(int regionId, int circleId,
-			int cityId) {
+	public List<LocationData> getLocationCount() {
 
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
 		List<LocationData> locationDataList = new ArrayList<>();
-		try (CallableStatement cstmt = dch.masterDS.getConnection()
-				.prepareCall("{call getLocationCount(?,?,?}")) {
-			
-			//send regionId,circleId and cityId as input to the procedure
-			cstmt.setInt("regionId", regionId);
-			cstmt.setInt("circleId", circleId);
-			cstmt.setInt("cityId", cityId);
-			try (ResultSet rs = cstmt.executeQuery()) {
-				while (rs.next()) {
-					
-					//fill the location object
-					LocationData ld = setLocationData(rs);
-					
-					//add location object to the location data list
-					locationDataList.add(ld);
+		try (CallableStatement cstmt = dch.masterDS.getConnection().prepareCall("{call getCityCount()}"); ResultSet rs = cstmt.executeQuery();) {
+			while (rs.next()) {
+				locationDataList.add(setLocationData(rs, true, true));
+			}
+
+			try (CallableStatement cstmt1 = dch.masterDS.getConnection().prepareCall("{call getCircleCount()}");
+					ResultSet rs1 = cstmt1.executeQuery();) {
+				while (rs1.next()) {
+					locationDataList.add(setLocationData(rs1, true, false));
+				}
+			}
+
+			try (CallableStatement cstmt1 = dch.masterDS.getConnection().prepareCall("{call getRegionCount()}");
+					ResultSet rs1 = cstmt1.executeQuery();) {
+				while (rs1.next()) {
+					locationDataList.add(setLocationData(rs1, false, false));
 				}
 			}
 		} catch (SQLException e) {
-			org.apache.log4j.Logger.getLogger(DashboardHelper.class).error(
-					"Exception while retrieving the location count deatails :",
-					e);
+			org.apache.log4j.Logger.getLogger(DashboardHelper.class).error("Exception while retrieving the location count deatails :", e);
 		}
 		return locationDataList;
 	}
@@ -87,11 +80,19 @@ public class DashboardHelper {
 	 * @return LocationData object
 	 * @throws SQLException - If unable to retrieve data from the resultset
 	 */
-	private LocationData setLocationData(ResultSet rs) throws SQLException {
+	private LocationData setLocationData(ResultSet rs, boolean isCircle, boolean isCity) throws SQLException {
 		LocationData ld = new LocationData();
-		ld.setRegionId(rs.getInt("regionId"));
-		ld.setCircleId(rs.getInt("circleId"));
-		ld.setCityId(rs.getInt("cityId"));
+
+		ld.setRegionId(rs.getInt("region_id"));
+		ld.setRegionName(rs.getString("region"));
+		if (isCircle) {
+			ld.setCircleId(rs.getInt("circle_id"));
+			ld.setCircleName(rs.getString("circle"));
+		}
+		if (isCity) {
+			ld.setCityId(rs.getInt("city_id"));
+			ld.setCityName(rs.getString("city"));
+		}
 		ld.setCandidateCount(rs.getInt("candidateCount"));
 		return ld;
 	}
@@ -104,40 +105,37 @@ public class DashboardHelper {
 	 */
 	public List<Role> getRoleCount(int regionId, int circleId) {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
-		org.apache.log4j.Logger.getLogger(DashboardHelper.class).debug(
-				"HashMap for role count created");
+		org.apache.log4j.Logger.getLogger(DashboardHelper.class).debug("HashMap for role count created");
 		List<Role> roleCountList = new ArrayList<>();
-		try (CallableStatement cstmt = dch.masterDS.getConnection()
-				.prepareCall("{call getRoleCount(?,?)}")) {
-			
-			//send regionId and circleId as input to the procedure
-			
+		try (CallableStatement cstmt = dch.masterDS.getConnection().prepareCall("{call getRoleCount(?,?)}")) {
+
+			// send regionId and circleId as input to the procedure
+
 			cstmt.setInt("regionId", regionId);
 			cstmt.setInt("circleId", circleId);
 			try (ResultSet rs = cstmt.executeQuery()) {
 				while (rs.next()) {
-					//fill the role object with role id,role and candidate count
+					// fill the role object with role id,role and candidate count
 					Role r = setRoleDetails(rs);
-					
-					//fill the roleCountList
+
+					// fill the roleCountList
 					roleCountList.add(r);
 				}
 			}
 
 		} catch (SQLException e) {
-			org.apache.log4j.Logger.getLogger(DashboardHelper.class).error(
-					"Exeption in retrieving the role count details :", e);
+			org.apache.log4j.Logger.getLogger(DashboardHelper.class).error("Exeption in retrieving the role count details :", e);
 		}
 
 		return roleCountList;
 	}
-	
+
 	/**
 	 * Fills the Role object with 
 	 * @param rs - resultset
 	 * @return Role object
 	 * @throws SQLException - If unable to retrieve data from the resultset
-	 */ 
+	 */
 	private Role setRoleDetails(ResultSet rs) throws SQLException {
 		Role r = new Role();
 		r.setRole(rs.getString("role"));
