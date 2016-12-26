@@ -14,6 +14,7 @@ public class CandidateHelperTest {
 		List<Candidate> candidateList = ch.getCandidateListByFilter(0, 0, 0, 0);
 		for (Candidate c : candidateList){
 			System.out.println(c.getName());
+			System.out.println(c.getCandidateId());
 			System.out.println(c.getEmailId());
 			System.out.println(c.getMobileNumber());
 			System.out.println(c.getCity());

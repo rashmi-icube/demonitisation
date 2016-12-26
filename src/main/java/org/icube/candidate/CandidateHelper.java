@@ -62,6 +62,7 @@ public class CandidateHelper {
 	private Candidate setCandidateDetails(ResultSet rs) throws SQLException {
 		Candidate c = new Candidate();
 		c.setName(rs.getString("cand_name"));
+		c.setCandidateId(rs.getInt("cand_id"));
 		c.setEmailId(rs.getString("email_id"));
 		c.setMobileNumber(rs.getString("mob_no"));
 		c.setRole(rs.getString("role"));

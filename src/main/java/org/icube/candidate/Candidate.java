@@ -2,6 +2,7 @@ package org.icube.candidate;
 
 public class Candidate {
 	private String name;
+	private int candidateId;
 	private String mobileNumber;
 	private String emailId;
 	private String city;
@@ -13,6 +14,14 @@ public class Candidate {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(int candidateId) {
+		this.candidateId = candidateId;
 	}
 
 	public String getMobileNumber() {
