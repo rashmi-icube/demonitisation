@@ -3,12 +3,46 @@ package org.icube.helper;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.icube.axis.ObjectFactory;
+import org.icube.dashboard.LocationData;
 
 public class MasterListHelper {
+
+	/**
+	 * Retrieve the complete location master list for filter matching
+	 * @return list of location data objects
+	 */
+	public List<LocationData> getLocationMasterList() {
+		List<LocationData> locationMasterList = new ArrayList<>();
+
+		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
+		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug("HashMap for location master list created");
+
+		// call the procedure to get the location master list
+		try (CallableStatement cstmt = dch.masterDS.getConnection().prepareCall("{call getLocationMasterList()}");
+				ResultSet rs = cstmt.executeQuery()) {
+			while (rs.next()) {
+				LocationData ld = new LocationData();
+				ld.setRegionId(rs.getInt("region_id"));
+				ld.setRegionName(rs.getString("region"));
+				ld.setCircleId(rs.getInt("circle_id"));
+				ld.setCircleName(rs.getString("circle"));
+				ld.setCityId(rs.getInt("city_id"));
+				ld.setCityName(rs.getString("city"));
+				locationMasterList.add(ld);
+			}
+
+		} catch (SQLException e) {
+			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error("Exception in retrieving the location master list :", e);
+		}
+
+		return locationMasterList;
+	}
 
 	/**
 	 * Retrieves the region master list
@@ -16,22 +50,17 @@ public class MasterListHelper {
 	 */
 	public Map<Integer, String> getRegionMasterList() {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
-		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug(
-				"HashMap for region created");
+		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug("HashMap for region created");
 		Map<Integer, String> regionMasterList = new HashMap<>();
-		
-		//call the procedure to get the region master list
-		try (CallableStatement cstmt = dch.masterDS.getConnection()
-				.prepareCall("{call getRegionMasterList()}");
-				ResultSet rs = cstmt.executeQuery()) {
+
+		// call the procedure to get the region master list
+		try (CallableStatement cstmt = dch.masterDS.getConnection().prepareCall("{call getRegionMasterList()}"); ResultSet rs = cstmt.executeQuery()) {
 			while (rs.next()) {
-				regionMasterList.put(rs.getInt("region_id"),
-						rs.getString("region"));
+				regionMasterList.put(rs.getInt("region_id"), rs.getString("region"));
 			}
 
 		} catch (SQLException e) {
-			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error(
-					"Exception in retrieving the region master list :", e);
+			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error("Exception in retrieving the region master list :", e);
 		}
 		return regionMasterList;
 	}
@@ -42,21 +71,16 @@ public class MasterListHelper {
 	 */
 	public Map<Integer, String> getCircleMasterList() {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
-		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug(
-				"HashMap for circle created");
+		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug("HashMap for circle created");
 		Map<Integer, String> circleMasterList = new HashMap<>();
-		//call the procedure to get the circle master list
-		try (CallableStatement cstmt = dch.masterDS.getConnection()
-				.prepareCall("{call getCircleMasterList()}");
-				ResultSet rs = cstmt.executeQuery()) {
+		// call the procedure to get the circle master list
+		try (CallableStatement cstmt = dch.masterDS.getConnection().prepareCall("{call getCircleMasterList()}"); ResultSet rs = cstmt.executeQuery()) {
 			while (rs.next()) {
-				circleMasterList.put(rs.getInt("circle_id"),
-						rs.getString("circle"));
+				circleMasterList.put(rs.getInt("circle_id"), rs.getString("circle"));
 			}
 
 		} catch (SQLException e) {
-			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error(
-					"Exception in retrieving the circle master list :", e);
+			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error("Exception in retrieving the circle master list :", e);
 		}
 		circleMasterList.put(0, "ALL");
 		return circleMasterList;
@@ -68,20 +92,16 @@ public class MasterListHelper {
 	 */
 	public Map<Integer, String> getCityMasterList() {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
-		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug(
-				"HashMap for city created");
+		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug("HashMap for city created");
 		Map<Integer, String> cityMasterList = new HashMap<>();
-		//call the procedure to get the city master list
-		try (CallableStatement cstmt = dch.masterDS.getConnection()
-				.prepareCall("{call getCityMasterList()}");
-				ResultSet rs = cstmt.executeQuery()) {
+		// call the procedure to get the city master list
+		try (CallableStatement cstmt = dch.masterDS.getConnection().prepareCall("{call getCityMasterList()}"); ResultSet rs = cstmt.executeQuery()) {
 			while (rs.next()) {
 				cityMasterList.put(rs.getInt("city_id"), rs.getString("city"));
 			}
 
 		} catch (SQLException e) {
-			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error(
-					"Exception in retrieving the city master list :", e);
+			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error("Exception in retrieving the city master list :", e);
 		}
 		cityMasterList.put(0, "ALL");
 		return cityMasterList;
@@ -93,20 +113,16 @@ public class MasterListHelper {
 	 */
 	public Map<Integer, String> getRoleMasterList() {
 		DatabaseConnectionHelper dch = ObjectFactory.getDBHelper();
-		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug(
-				"HashMap for role created");
+		org.apache.log4j.Logger.getLogger(MasterListHelper.class).debug("HashMap for role created");
 		Map<Integer, String> roleMasterList = new HashMap<>();
-		//call the procedure to get the role master list
-		try (CallableStatement cstmt = dch.masterDS.getConnection()
-				.prepareCall("{call getRoleMasterList()}");
-				ResultSet rs = cstmt.executeQuery()) {
+		// call the procedure to get the role master list
+		try (CallableStatement cstmt = dch.masterDS.getConnection().prepareCall("{call getRoleMasterList()}"); ResultSet rs = cstmt.executeQuery()) {
 			while (rs.next()) {
 				roleMasterList.put(rs.getInt("role_id"), rs.getString("role"));
 			}
 
 		} catch (SQLException e) {
-			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error(
-					"Exception in retrieving the role master list :", e);
+			org.apache.log4j.Logger.getLogger(MasterListHelper.class).error("Exception in retrieving the role master list :", e);
 		}
 		roleMasterList.put(0, "ALL");
 		return roleMasterList;
