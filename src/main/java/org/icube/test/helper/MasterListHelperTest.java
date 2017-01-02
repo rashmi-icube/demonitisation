@@ -1,11 +1,27 @@
 package org.icube.test.helper;
 
+import java.util.List;
 import java.util.Map;
 
+import org.icube.dashboard.LocationData;
 import org.icube.helper.MasterListHelper;
 import org.junit.Test;
 
 public class MasterListHelperTest {
+	
+	@Test
+	public void testGetLocationMasterList(){
+		MasterListHelper mlh = new MasterListHelper();
+		List<LocationData> locationMasterList = mlh.getLocationMasterList();
+		for(LocationData ld :locationMasterList){
+			System.out.println(ld.getRegionId());
+			System.out.println(ld.getRegionName());
+			System.out.println(ld.getCircleId());
+			System.out.println(ld.getCircleName());
+			System.out.println(ld.getCityId());
+			System.out.println(ld.getCityName());
+		}
+	}
 	
 	@Test
 	public void testGetRegionMasterList(){
